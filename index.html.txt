@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>卫星断讯之后 · 台湾战时影响交互长图</title>
+    <!-- 引入 html2canvas 用于下载 -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- 引入 AOS 滚动动画 -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #040a14;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px 10px 40px;
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans TC', 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+        .download-bar {
+            position: sticky; top: 16px; z-index: 200; margin-bottom: 24px;
+            background: rgba(10,15,30,0.8); backdrop-filter: blur(15px); padding: 12px 24px;
+            border-radius: 50px; border: 1px solid #3b82f6; box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;
+            transition: all 0.3s;
+        }
+        .download-bar:hover { border-color: #60a5fa; box-shadow: 0 12px 30px rgba(59,130,246,0.3); }
+        .btn-download {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; color: white;
+            font-weight: 700; font-size: 1.1rem; padding: 12px 28px; border-radius: 40px;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 20px rgba(37,99,235,0.4); transition: all 0.3s;
+            letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-download:hover { transform: translateY(-3px); box-shadow: 0 18px 30px rgba(37,99,235,0.7); background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .btn-download:active { transform: translateY(0px); }
+        .tip-text { color: #94a3b8; font-size: 0.9rem; margin-left: 8px; }
+        .poster {
+            width: 800px; max-width: 100%;
+            background: linear-gradient(180deg, #0a1120 0%, #0b1426 30%, #0b172b 70%, #0a1022 100%);
+            border-radius: 32px; overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 2px rgba(59,130,246,0.2);
+            position: relative; color: #e0e7f5; padding: 0 0 10px 0;
+            transition: box-shadow 0.5s;
+        }
+        .poster:hover { box-shadow: 0 35px 70px rgba(0,0,0,0.95), 0 0 0 3px rgba(59,130,246,0.35); }
+        .stars-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(1.5px 1.5px at 10% 8%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.2px 1.2px at 25% 15%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2px 2px at 45% 5%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 65% 12%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1.8px 1.8px at 80% 9%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.3px 1.3px at 15% 28%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2px 2px at 55% 35%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.5px 1.5px at 35% 55%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2.2px 2.2px at 75% 65%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 20% 72%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1.7px 1.7px at 60% 78%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.4px 1.4px at 85% 85%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2px 2px at 5% 90%, rgba(255,255,255,0.6), transparent);
+            opacity: 0.65; animation: starTwinkle 6s infinite alternate;
+        }
+        @keyframes starTwinkle { 0% { opacity: 0.5; } 100% { opacity: 0.8; } }
+        .content { position: relative; z-index: 2; padding: 30px 35px 20px; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header .sat-emoji { font-size: 70px; display: block; filter: drop-shadow(0 0 18px #38bdf8); margin-bottom: 10px; animation: floatIcon 4s ease-in-out infinite; }
+        @keyframes floatIcon { 0% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(3deg); } 100% { transform: translateY(0) rotate(-2deg); } }
+        .header h1 { font-size: clamp(2.2rem, 5vw, 3rem); font-weight: 800; background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 4px; line-height: 1.3; margin: 10px 0; }
+        .header .sub { font-size: 1.1rem; color: #a0b8d0; background: rgba(255,255,255,0.05); display: inline-block; padding: 8px 24px; border-radius: 30px; border: 1px solid rgba(56,189,248,0.35); backdrop-filter: blur(5px); }
+        .question-box { background: rgba(255,215,0,0.06); border-left: 6px solid #fbbf24; border-radius: 20px; padding: 20px 22px; margin: 28px 0 35px; font-size: 1.15rem; font-weight: 500; color: #fde68a; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 12px 28px rgba(0,0,0,0.5); }
+        .question-box .emoji-big { font-size: 38px; display: block; margin-bottom: 8px; }
+        .compare-title { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 20px 0 30px; font-weight: 800; font-size: 1.2rem; color: white; text-transform: uppercase; }
+        .cmp-left, .cmp-right { background: #101b2f; padding: 12px 28px; border-radius: 40px; border: 1px solid #2d3b5a; letter-spacing: 1.5px; }
+        .cmp-left { border-bottom: 3px solid #f59e0b; } .cmp-right { border-bottom: 3px solid #ef4444; }
+        .vs { background: #1e293b; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #cbd5e1; border: 2px solid #475569; box-shadow: 0 0 20px #3b82f6; }
+        .timeline-block { margin: 15px 0 30px; }
+        .phase-row { display: flex; align-items: stretch; margin-bottom: 45px; }
+        .card { flex: 1; background: rgba(15,23,42,0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 24px; padding: 24px 22px; box-shadow: 0 20px 35px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.08); font-size: 0.95rem; color: #cbd5e1; transition: all 0.4s ease; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 28px 45px rgba(0,0,0,0.85); border-color: rgba(255,255,255,0.15); }
+        .card-left { margin-right: 8px; border-right: 4px solid #f59e0b; text-align: left; }
+        .card-right { margin-left: 8px; border-left: 4px solid #ef4444; text-align: left; }
+        .card h3 { font-size: 1.4rem; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; color: #f8fafc; }
+        .card p { margin: 8px 0; line-height: 1.7; }
+        .highlight { color: #fbbf24; font-weight: 700; } .danger { color: #f87171; font-weight: 700; }
+        .time-node { width: 65px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; z-index: 3; }
+        .node-dot { width: 26px; height: 26px; background: #0f172a; border: 3px solid #3b82f6; border-radius: 50%; box-shadow: 0 0 22px #2563eb; margin-bottom: 10px; animation: pulseNode 2.2s infinite; }
+        @keyframes pulseNode { 0% { box-shadow: 0 0 8px #3b82f6; transform: scale(1); } 50% { box-shadow: 0 0 30px #60a5fa, 0 0 50px #3b82f6; transform: scale(1.2); } 100% { box-shadow: 0 0 8px #3b82f6; transform: scale(1); } }
+        .time-badge { font-size: 0.8rem; font-weight: 700; background: #1e293b; color: #93c5fd; padding: 6px 14px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.5px; }
+        .help-section { background: linear-gradient(150deg, #0b1e33, #03122b); border-radius: 36px; padding: 38px 32px 32px; margin: 45px 0 35px; border: 1px solid rgba(34,197,94,0.45); box-shadow: 0 30px 55px -15px #064e3b; backdrop-filter: blur(12px); }
+        .help-section h2 { text-align: center; font-size: 2rem; font-weight: 700; color: #bbf7d0; margin-bottom: 32px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .sat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 10px; }
+        .sat-card { background: rgba(17,24,39,0.8); border-radius: 28px; padding: 26px 20px; text-align: center; border: 1px solid #2d4a3e; backdrop-filter: blur(6px); transition: all 0.35s ease; }
+        .sat-card:hover { transform: translateY(-8px); border-color: #4ade80; background: rgba(17,30,45,0.9); box-shadow: 0 22px 35px rgba(74,222,128,0.25); }
+        .sat-icon { font-size: 50px; margin-bottom: 10px; display: block; filter: drop-shadow(0 0 12px #4ade80); transition: 0.3s; }
+        .sat-card:hover .sat-icon { transform: scale(1.1); filter: drop-shadow(0 0 20px #4ade80); }
+        .sat-card h4 { color: #f0fdf4; font-size: 1.2rem; margin: 10px 0 14px; }
+        .sat-card p { font-size: 0.9rem; color: #aac7b5; line-height: 1.6; text-align: left; }
+        .outro { text-align: center; background: rgba(30,41,59,0.75); backdrop-filter: blur(10px); border-radius: 26px; padding: 26px 22px; margin: 20px 0 10px; border: 1px dashed #64748b; font-size: 1.1rem; color: #e2e8f0; line-height: 1.8; }
+        .outro .big-quote { color: #fde047; font-size: 1.5rem; font-weight: 700; }
+        .disclaimer { font-size: 0.7rem; color: #94a3b8; margin-top: 18px; }
+        .fun-tag { display: inline-block; background: #334155; color: #f1f5f9; padding: 2px 12px; border-radius: 20px; font-size: 0.8rem; margin: 4px 0; vertical-align: middle; }
+        @media (max-width: 750px) {
+            .poster { width: 100%; border-radius: 0; }
+            .content { padding: 20px 15px; }
+            .card { padding: 16px 12px; font-size: 0.8rem; }
+            .time-node { width: 48px; }
+            .sat-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-bar" data-aos="fade-down" data-aos-duration="600">
+        <button class="btn-download" id="downloadBtn">⬇️ 下载完整长图</button>
+        <span class="tip-text">也可随时截图保存</span>
+    </div>
+
+    <div class="poster" id="posterCapture">
+        <div class="stars-layer"></div>
+        <div class="content">
+            <div class="header" data-aos="fade-up" data-aos-duration="800">
+                <span class="sat-emoji">🛰️📡</span>
+                <h1>卫星突然“失联”</h1>
+                <div class="sub">台湾 · 战时推演长图｜失去美国卫星的一天、一周、一个月</div>
+            </div>
+            <div class="question-box" data-aos="zoom-in" data-aos-delay="150">
+                <span class="emoji-big">🤔</span>
+                你手机里的地图、航班的航线、渔船的罗盘、甚至ATM的时间，<br>都系于天上的“隐形脐带”。<br>如果它断了，生活会变成什么样子？
+                <span class="fun-tag">👀 往下看</span>
+            </div>
+            <div class="compare-title" data-aos="fade-up" data-aos-duration="700">
+                <span class="cmp-left">🏘️ 普通民众</span>
+                <span class="vs">VS</span>
+                <span class="cmp-right">⚔️ 台湾军队</span>
+            </div>
+            <div class="timeline-block">
+                <div class="phase-row" data-aos="fade-right" data-aos-duration="800">
+                    <div class="card card-left">
+                        <h3>☀️ 第1天 <span class="highlight">· 叫不到车</span></h3>
+                        <p>📱 导航飘移，Uber 迷路，外送迟到两小时。</p>
+                        <p>✈️ 航班因GPS大乱，旅客困在候机楼。</p>
+                        <p>💳 刷卡失败，便利商店排队躁动。</p>
+                        <p style="color:#a0afc0; font-size:0.8rem;">民众：应该是电信故障吧？</p>
+                    </div>
+                    <div class="time-node"><div class="node-dot"></div><span class="time-badge">DAY 1</span></div>
+                    <div class="card card-right">
+                        <h3><span class="danger">💥 精确弹药失效</span></h3>
+                        <p>🎯 JDAM炸弹、鱼叉导弹失去GPS，偏差数百米。</p>
+                        <p>🛩️ 无人机停飞，侦察情报归零。</p>
+                        <p>📡 卫星通信中断，外岛失联。</p>
+                    </div>
+                </div>
+                <div class="phase-row" data-aos="fade-left" data-aos-duration="800">
+                    <div class="card card-left">
+                        <h3>📆 第1周 <span class="highlight">· 冰箱空了</span></h3>
+                        <p>🚚 物流追踪瘫痪，生鲜烂在港口，超市货架空一半。</p>
+                        <p>🐟 渔船不敢出海，鱼价暴涨三倍。</p>
+                        <p>🏧 ATM时间错乱，民众抢提现金。</p>
+                        <p style="color:#fcd34d; font-size:0.8rem;">“好像回到没有手机的年代……”</p>
+                    </div>
+                    <div class="time-node"><div class="node-dot"></div><span class="time-badge">WEEK 1</span></div>
+                    <div class="card card-right">
+                        <h3><span class="danger">🚫 后勤瘫痪</span></h3>
+                        <p>🚛 补给车队迷路，前线缺粮缺弹药。</p>
+                        <p>🚢 舰艇无定位不敢出港，封锁失效。</p>
+                        <p>📉 士气低落，士兵手机无信号，恐慌蔓延。</p>
+                    </div>
+                </div>
+                <div class="phase-row" data-aos="fade-right" data-aos-duration="800">
+                    <div class="card card-left">
+                        <h3>🌑 第1个月 <span class="highlight">· 城市静默</span></h3>
+                        <p>⚡ 电力网授时失准，分区限电，红绿灯乱跳。</p>
+                        <p>🏥 医院系统崩溃，慢性病药配送中断。</p>
+                        <p>🏦 回归现金社会，ATM停用，排队争吵成日常。</p>
+                        <p style="color:#f87171; font-size:0.8rem;">“原来我们这么依赖看不见的信号。”</p>
+                    </div>
+                    <div class="time-node"><div class="node-dot"></div><span class="time-badge">MONTH 1</span></div>
+                    <div class="card card-right">
+                        <h3><span class="danger">💔 体系崩溃</span></h3>
+                        <p>🛡️ 重装备变固定靶，无法协同作战。</p>
+                        <p>📻 通讯靠吼，指挥链名存实亡。</p>
+                        <p>🏳️ 失去外部情报与导航，抵抗意志瓦解。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="help-section" data-aos="fade-up" data-aos-duration="900">
+                <h2>🛰️✨ 但天上还有另一张网</h2>
+                <div class="sat-grid">
+                    <div class="sat-card" data-aos="flip-left" data-aos-delay="100"><span class="sat-icon">🧭</span><h4>北斗卫星导航</h4><p>台湾上空随时可见<span style="color:#fde047;">12~16颗北斗</span>，免费提供10米定位、20纳秒授时。你的手机其实早已支持北斗！</p></div>
+                    <div class="sat-card" data-aos="flip-left" data-aos-delay="200"><span class="sat-icon">☁️</span><h4>风云气象卫星</h4><p>实时台风、暴雨监测，预报精准到街道，渔民和农民的好伙伴，不再看外国脸色。</p></div>
+                    <div class="sat-card" data-aos="flip-left" data-aos-delay="300"><span class="sat-icon">📡</span><h4>中星通信卫星</h4><p>应急通讯、电视广播不中断，离岛也能收到清晰信号，灾时还能发手机预警。</p></div>
+                    <div class="sat-card" data-aos="flip-left" data-aos-delay="400"><span class="sat-icon">📸</span><h4>高分遥感卫星</h4><p>亚米级“天眼”用于灾害评估、海上搜救、城市规划，重建家园的科技后盾。</p></div>
+                </div>
+                <p style="text-align:center; margin-top:28px; color:#b0c4de; font-size:1rem;" data-aos="fade-up" data-aos-delay="500">🌟 更重要的是——这些卫星<span style="color:#4ade80; font-weight:700;">由中国自主运营</span>，战时不会说断就断。</p>
+            </div>
+            <div class="outro" data-aos="zoom-in" data-aos-duration="800">
+                <p><span class="big-quote">“当GPS信号消失，你的手机还能收到北斗定位服务。”</span></p>
+                <p style="margin-top:14px;">导航不只关乎方向，更关乎安全与生存。<br>自主的太空基础设施，就是现代社会的<span style="color:#facc15;">“备用罗盘”</span>。</p>
+                <p class="disclaimer">本海报为科普推演与技术探讨，愿每个看完的人，更了解头顶的星空。</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: false, mirror: true, offset: 80 });
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            html2canvas(document.getElementById('posterCapture'), {
+                scale: 2, useCORS: true, backgroundColor: '#0a1120', logging: false, allowTaint: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = '卫星断讯之后-台湾战时影响长图.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => { alert('生成失败，请刷新或截图保存。'); });
+        });
+    </script>
+</body>
+</html>
